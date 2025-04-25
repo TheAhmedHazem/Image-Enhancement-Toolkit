@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Enhancer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-green-300 min-h-screen flex items-center justify-center p-4">
+  <div class="flex flex-col md:flex-row bg-green-300 rounded-lg overflow-hidden w-full max-w-7xl">
+    <!-- Left: Image Upload and Preview -->
+    <div class="flex-1 bg-white rounded-lg m-4 flex flex-col justify-center items-center relative">
+      <div id="drop-area" class="w-full h-full flex flex-col justify-center items-center cursor-pointer">
+        <input type="file" id="fileElem" accept="image/*" class="hidden">
+        <img id="preview" src="" alt="Preview" class="hidden max-w-full max-h-full object-contain">
+        <div id="upload-placeholder" class="flex flex-col items-center justify-center">
+          <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4-4m0 0l-4 4m4-4v12"></path>
+          </svg>
+          <p class="mt-2 text-gray-600">Upload or drag an image</p>
+        </div>
+      </div>
+      <button id="toggle-preview" class="absolute bottom-4 left-4 bg-gray-100 p-2 rounded-full shadow hidden">👁️</button>
+      <button id="fullscreen" class="absolute top-4 right-4 bg-gray-100 p-2 rounded-full shadow hidden">⛶</button>
+    </div>
+
+    <!-- Right: Editing Panel -->
+    <div class="flex flex-col space-y-4 m-4 w-full md:w-80">
+      <!-- Brightness Control -->
+      <div class="bg-yellow-100 rounded-lg p-4">
+        <div class="w-full font-bold text-lg">Brightness</div>
+        <div class="mt-4">
+          <input type="range" min="0" max="100" value="0" class="w-full">
+          <div class="flex justify-between items-center mt-2">
+            <span>0%</span>
+            <select class="bg-yellow-200 rounded p-1">
+              <option>Technique</option>
+              <option>Gamma Transform</option>
+              <option>Log Transform</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contrast Control -->
+      <div class="bg-yellow-100 rounded-lg p-4">
+        <div class="w-full font-bold text-lg">Contrast</div>
+        <div class="mt-4">
+          <input type="range" min="0" max="100" value="0" class="w-full">
+          <div class="flex justify-between items-center mt-2">
+            <span>0%</span>
+            <select class="bg-yellow-200 rounded p-1">
+              <option>Technique</option>
+              <option>Piecewise</option>
+              <option>Power-law</option>
+              <option>Thresholding</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Highlights Control -->
+      <div class="bg-yellow-100 rounded-lg p-4">
+        <div class="w-full font-bold text-lg">Highlights</div>
+        <div class="mt-4">
+          <input type="range" min="0" max="100" value="0" class="w-full">
+          <div class="flex justify-between items-center mt-2">
+            <span>0%</span>
+            <select class="bg-yellow-200 rounded p-1">
+              <option>Technique</option>
+              <option>Piecewise</option>
+              <option>Log</option>
+              <option>Negative</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shadows Control -->
+      <div class="bg-yellow-100 rounded-lg p-4">
+        <div class="w-full font-bold text-lg">Shadows</div>
+        <div class="mt-4">
+          <input type="range" min="0" max="100" value="0" class="w-full">
+          <div class="flex justify-between items-center mt-2">
+            <span>0%</span>
+            <select class="bg-yellow-200 rounded p-1">
+              <option>Technique</option>
+              <option>Piecewise</option>
+              <option>Log</option>
+              <option>Negative</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sharpness Control -->
+      <div class="bg-yellow-100 rounded-lg p-4">
+        <div class="w-full font-bold text-lg">Sharpness</div>
+        <div class="mt-4">
+          <input type="range" min="0" max="100" value="0" class="w-full">
+          <div class="flex justify-between items-center mt-2">
+            <span>0%</span>
+            <select class="bg-yellow-200 rounded p-1">
+              <option>Bit-plane slicing</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button id="download" class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 rounded shadow mt-4">⬇️ Download</button>
+    </div>
+  </div>
+
+  <script>
+    const dropArea = document.getElementById('drop-area');
+    const fileElem = document.getElementById('fileElem');
+    const preview = document.getElementById('preview');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
+    const togglePreview = document.getElementById('toggle-preview');
+    const fullscreen = document.getElementById('fullscreen');
+
+    dropArea.addEventListener('click', () => fileElem.click());
+    fileElem.addEventListener('change', handleFiles);
+
+    function handleFiles() {
+      const file = fileElem.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        preview.src = e.target.result;
+        preview.classList.remove('hidden');
+        uploadPlaceholder.classList.add('hidden');
+        togglePreview.classList.remove('hidden');
+        fullscreen.classList.remove('hidden');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    fullscreen.addEventListener('click', () => {
+      if (preview.requestFullscreen) {
+        preview.requestFullscreen();
+      }
+    });
+
+    togglePreview.addEventListener('click', () => {
+      if (preview.classList.contains('hidden')) {
+        preview.classList.remove('hidden');
+        uploadPlaceholder.classList.add('hidden');
+      } else {
+        preview.classList.add('hidden');
+        uploadPlaceholder.classList.remove('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
