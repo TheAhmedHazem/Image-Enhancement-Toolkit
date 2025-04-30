@@ -1,0 +1,6 @@
+scikit-image
+streamlit>=1.44.1
+numpy>=2.2.0
+opencv-python>=4.8.0
+pillow>=9.0.0
+matplotlib>=3.7.0

@@ -11,24 +11,22 @@ A streamlit-based web application that provides various image processing functio
   - Edge detection with customizable thresholds
   - Binary thresholding with adjustable values
   - Brightness and contrast adjustment
+  - Watershed segmentation for object separation
+  - Adaptive threshold segmentation with adjustable parameters
+  
 - **Download**: Processed images can be downloaded in PNG format
 
 ## Installation
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/Image-Enhancement-Toolkit.git
+   git clone https://github.com/TheAhmedHazem/Image-Enhancement-Toolkit.git
    cd Image-Enhancement-Toolkit
    ```
 
-2. Install dependencies using Poetry:
+2. Install dependencies:
    ```bash
-   poetry install
-   ```
-
-   Or using pip:
-   ```bash
-   pip install -r requirements.txt
+   pip install -r reqs.txt
    ```
 
 ## Dependencies
@@ -59,12 +57,26 @@ A streamlit-based web application that provides various image processing functio
 
 ```
 Image-Enhancement-Toolkit/
-├── app.py          # Main application file
+├── app.py          # Main Streamlit application with UI components
+├── utils.py        # Utility functions for image processing operations
+├── reqs.txt        # Project dependencies
+├── static/         # Static assets for web interface
+│   └── style.css   # CSS styles for HTML interface
+├── templates/      # HTML templates for potential web interface
+│   └── index.html  # Main HTML template
 ├── LICENSE         # MIT License
-├── pyproject.toml  # Project configuration
-├── README.md       # Project documentation
-└── env1/           # Package directory
+└── README.md       # Project documentation
 ```
+
+## Code Organization
+
+The project follows a modular structure:
+
+- **app.py**: Contains the Streamlit UI and application logic
+- **utils.py**: Contains reusable image processing functions:
+  - Basic operations (grayscale, blur, edge detection)
+  - Advanced segmentation techniques (watershed, adaptive thresholding)
+  - Helper functions for image conversion and download
 
 ## License
 
