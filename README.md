@@ -17,7 +17,7 @@ A streamlit-based web application that provides various image processing functio
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/Image-Enhancement-Toolkit.git
+   git clone https://github.com/TheAhmedHazem/PixelPerfect.git
    cd Image-Enhancement-Toolkit
    ```
 
