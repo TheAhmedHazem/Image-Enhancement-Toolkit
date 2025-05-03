@@ -1,0 +1,27 @@
+.body{
+  font-family: 'Inter', sans-serif;
+}
+.bg-custom-green {
+  background-color: #91E0A6;
+}
+.bg-custom-control {
+  background-color: #F9FFD0;
+}
+.text-custom-gray {
+  color: #7A7D9C;
+}
+.custom-control-menu{
+  background-color:#f3ffae;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  color:darkslategray;
+  font-weight: 600;
+}
+.bg-custom-control:hover {
+  background-color: #f3ffae;
+  .text-custom-gray {
+    color: #5b5c67;
+  }
+  transition: background-color 0.3s ease;
+}
