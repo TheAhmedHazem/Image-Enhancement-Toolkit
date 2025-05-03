@@ -6,10 +6,38 @@ import io
 from utils.image_processing import process_image
 from utils.utils import pil_to_bytes, bytes_to_pil
 
+# Configure page to hide the default navigation
+st.set_page_config(
+    page_title="Edit Image",
+    page_icon="🖼️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# Hide default Streamlit file navigation with CSS
+st.markdown("""
+<style>
+    .stApp [data-testid="stSidebarNav"] {display: none;}
+</style>
+""", unsafe_allow_html=True)
+
+# Custom sidebar navigation - fixed paths for Streamlit
+st.sidebar.title("Navigation")
+if st.sidebar.button("🏠 Home", key="nav_home"):
+    st.switch_page("app.py")
+if st.sidebar.button("🖼️ Edit Image", key="nav_edit"):
+    st.switch_page("pages/edit.py")
+if st.sidebar.button("✂️ Crop Image", key="nav_crop"):
+    st.switch_page("pages/crop.py")
+if st.sidebar.button("🧹 Remove Background", key="nav_bg"):
+    st.switch_page("pages/remove_bg.py")
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Version 2.0** · [GitHub Repo](#)")
+
 st.title("🖼️ Image Editor")
 
 # Add a "Clear Image" button to reset the uploaded image
-if st.button("🗑️ Clear Image"):
+if st.button("🗑️ Clear Image", key="btn_clear"):
     st.session_state.image_bytes = None
     st.experimental_set_query_params(refresh="true")
 
@@ -24,13 +52,13 @@ else:
 
 col1, col2, col3 = st.columns(3)
 with col1:
-    if st.button("✂️ Go to Cropping"):
+    if st.button("✂️ Go to Cropping", key="btn_goto_crop"):
         st.switch_page("pages/crop.py")
 with col2:
-    if st.button("🧹 Remove Background"):
+    if st.button("🧹 Remove Background", key="btn_goto_bg"):
         st.switch_page("pages/remove_bg.py")
 with col3:
-    if st.button("🔄 Reset Edits"):
+    if st.button("🔄 Reset Edits", key="btn_reset"):
         st.session_state.image_bytes = pil_to_bytes(image)
         st.experimental_set_query_params(refresh="true")
 
@@ -41,7 +69,8 @@ if st.session_state.image_bytes is not None:
     # Operation selection
     operation = st.selectbox(
         "Select Operation", 
-        ["Grayscale", "Blur", "Edge Detection", "Threshold", "Color Adjustment"],
+        ["Grayscale", "Blur", "Edge Detection", "Threshold", "Color Adjustment", 
+         "Adaptive Threshold Segmentation", "Watershed Segmentation"],
         index=0
     )
     
@@ -82,6 +111,18 @@ if st.session_state.image_bytes is not None:
                     "Contrast", 0.0, 3.0, 1.0, 0.1,
                     help="Adjust image contrast"
                 )
+        elif operation == "Adaptive Threshold Segmentation":
+            col1, col2 = st.columns(2)
+            with col1:
+                params["block_size"] = st.slider(
+                    "Block Size (odd)", 3, 51, 11, step=2,
+                    help="Size of pixel neighborhood used for threshold calculation"
+                )
+            with col2:
+                params["c_value"] = st.slider(
+                    "C Value", -10, 10, 2,
+                    help="Constant subtracted from mean, smaller values give more white areas"
+                )
     
     # Process image
     operation_map = {
@@ -89,7 +130,9 @@ if st.session_state.image_bytes is not None:
         "Blur": "blur",
         "Edge Detection": "edges",
         "Threshold": "threshold",
-        "Color Adjustment": "color_adjust"
+        "Color Adjustment": "color_adjust",
+        "Adaptive Threshold Segmentation": "adaptive_threshold_segmentation",
+        "Watershed Segmentation": "watershed_segmentation"
     }
     
     processed_image = process_image(img_array, operation_map[operation], params)

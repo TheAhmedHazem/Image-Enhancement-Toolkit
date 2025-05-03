@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def process_image(img_array, operation_type, params=None):
     if operation_type == "grayscale":
         return cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
@@ -21,4 +22,13 @@ def process_image(img_array, operation_type, params=None):
         brightness = params.get("brightness", 0)
         contrast = params.get("contrast", 1)
         return cv2.convertScaleAbs(img_array, alpha=contrast, beta=brightness)
+    elif operation_type == "adaptive_threshold_segmentation":
+        gray = cv2.cvtColor(img_array, cv2.COLOR_RGB2GRAY)
+        block_size = params.get("block_size", 11)
+        c_value = params.get("c_value", 2)
+        adaptive_thresh = cv2.adaptiveThreshold(
+            gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, 
+            cv2.THRESH_BINARY, block_size, c_value
+        )
+        return cv2.cvtColor(adaptive_thresh, cv2.COLOR_GRAY2RGB)
     return img_array
