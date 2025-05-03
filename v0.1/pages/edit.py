@@ -11,14 +11,14 @@ st.title("🖼️ Image Editor")
 # Add a "Clear Image" button to reset the uploaded image
 if st.button("🗑️ Clear Image"):
     st.session_state.image_bytes = None
-    st.experimental_set_query_params(refresh="true")
+    st.query_params(refresh="true")
 
 if st.session_state.image_bytes is None:
     uploaded_file = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.session_state.image_bytes = pil_to_bytes(image)
-        st.experimental_set_query_params(refresh="true")
+        st.query_params(refresh="true")
 else:
     image = bytes_to_pil(st.session_state.image_bytes)
 
@@ -32,7 +32,7 @@ with col2:
 with col3:
     if st.button("🔄 Reset Edits"):
         st.session_state.image_bytes = pil_to_bytes(image)
-        st.experimental_set_query_params(refresh="true")
+        st.query_params(refresh="true")
 
 # File uploader at the top
 if st.session_state.image_bytes is not None:
